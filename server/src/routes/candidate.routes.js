@@ -20,7 +20,7 @@ router.route("/Candidate").post(
 ]),candidateForm);
 router.route("/candidate/:id").get(candidateFetch);
 
-router.route("/allCandidate").get(allCanditateFetch);
+router.route("/allCandidate").post(allCanditateFetch);
 router.route("/allCandidate/:id").patch(candidateStatusModify);
 
 

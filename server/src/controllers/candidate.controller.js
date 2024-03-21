@@ -34,8 +34,9 @@ const candidateForm=asyncHandler(async(req,res)=>{
 })
 
 const  allCanditateFetch=asyncHandler(async(req,res)=>{
+    console.log(req.body)
     const{shortlistingLevel}=req.body;
-    if(!shortlistingLevel){
+    if(!(shortlistingLevel)){
         throw new apiError(400,"Shorlisting Level is required")
     }
     try{
