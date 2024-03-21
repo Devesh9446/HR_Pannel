@@ -47,61 +47,61 @@ const  allCanditateFetch=asyncHandler(async(req,res)=>{
     }
 })
 
-const candidateStatusModify=asyncHandler(async(req,res)=>{
-    const{id}=req.params;
+const candidateStatusModify = asyncHandler(async (req, res) => {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        throw new apiError(400, "ID is required");
+      }
+  
+      console.log(req.body);
+      const { shortlistingLevel, shortlistingLevelPosition } = req.body;
+  
+      if (!shortlistingLevel || !shortlistingLevelPosition) {
+        throw new apiError(
+          400,
+          "shortlistingLevel or shortlistingLevelPosition is required"
+        );
+      }
+  
+      const resp = await candidateInfo.findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            shortlistingLevelPosition: shortlistingLevelPosition,
+            shortlistingLevel: shortlistingLevel,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+  
+      res.status(200).json(new apiResponse(200, resp, "Data Sent Successfully"));
+    } catch (error) {
+      throw new apiError(`Error:${error}`);
+    }
+  });
+  
 
-    if(!id){
-        throw new apiError(400,"ID is required");
+const candidateFetch = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    console.log(id);
+    if (!id) {
+        throw new apiError(400, "Candidate Id is required");
     }
+    try {
+        const data = await candidateInfo.findById(id);
+        if (!data) {
+            throw new apiError(404, "Candidate not found");
+        }
+        res.status(200).json(new apiResponse(200, data, "Data sent successfully"));
+    } catch (error) {
+        console.error("Error fetching candidate data:", error);
+        throw new apiError(500, "Internal Server Error");
+    }
+});
 
-    const {shortlistingLevel,shortlistingLevelPosition}=req.body;
-
-    if(shortlistingLevel||shortlistingLevelPosition){
-        throw new apiError("shortlistingLevel or shortlistingLevelPosition is required");
-    }
-    if(shortlistingLevel){
-        const resp=candidateInfo.findByIdAndUpdate(
-            id,
-            {
-                $set:{
-                    shortlistingLevel:shortlistingLevel,
-                },
-            },
-            {
-                new:true
-            },
-        )
-        req.status(200).json(new apiResponse(200,resp,"dats Send Successfully"));
-    }
-    else{
-        const resp=candidateInfo.findByIdAndUpdate(
-            id,
-            {
-                $set:{
-                    shortlistingLevelPosition:shortlistingLevelPosition,
-                },
-            },
-            {
-                new:true
-            },
-        )
-        req.status(200).json(new apiResponse(200,resp,"dats Send Successfully"));
-
-    }
-})
-
-const candidateFetch=asyncHandler(async(req,res)=>{
-    const {id}=req.params;
-    if(!id){
-        throw new apiError(400,"Candidate Id is required")
-    }
-    try{
-        const data=candidateInfo.findById(id);
-        res.status(200).json(new apiResponse(200,data,"data send successfully"));
-    }catch(error){
-        throw new apiError(400,`ERROR:${error}`);
-    }
-})
 
 export {
     candidateForm,
